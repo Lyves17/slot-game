@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Crypto Slots</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0608; color: #ffe4b8; font-family: 'Orbitron', monospace; padding: 20px; }
+        h1 { color: #ffc84d; margin-bottom: 20px; font-size: 24px; }
+        .login-form { max-width: 400px; margin: 100px auto; text-align: center; }
+        .login-form input { width: 100%; padding: 12px; background: #1a0c10; border: 2px solid #3a2218; border-radius: 10px; color: #ffe4b8; font-family: monospace; font-size: 14px; margin-bottom: 12px; }
+        .login-form button { width: 100%; padding: 12px; background: linear-gradient(135deg, #7c3aed, #3b82f6); border: none; border-radius: 10px; color: #fff; font-family: 'Orbitron'; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .hidden { display: none; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+        .stat-card { background: #120a0e; border: 1px solid #3a2218; border-radius: 12px; padding: 16px; text-align: center; }
+        .stat-card .label { font-size: 10px; color: #8b7060; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card .value { font-size: 22px; font-weight: 800; color: #ffe08a; margin-top: 6px; }
+        .stat-card .value.green { color: #5ecf6b; }
+        .stat-card .value.red { color: #ff5a6b; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { background: #1a0c10; color: #8b7060; padding: 10px 8px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; position: sticky; top: 0; }
+        td { padding: 8px; border-bottom: 1px solid #1a0c10; }
+        tr:hover { background: #120a0e; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 9px; font-weight: 700; }
+        .badge-win { background: rgba(94,207,107,0.15); color: #5ecf6b; }
+        .badge-loss { background: rgba(255,90,107,0.1); color: #ff5a6b; }
+        .badge-pending { background: rgba(255,200,77,0.15); color: #ffc84d; }
+        .badge-paid { background: rgba(94,207,107,0.3); color: #5ecf6b; }
+        .pay-btn { background: #059669; color: #fff; border: none; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 10px; }
+        .pay-btn:hover { background: #047857; }
+        .refresh-btn { background: #3a2218; color: #ffe4b8; border: 1px solid #5a3a28; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 16px; font-family: 'Orbitron'; font-size: 11px; }
+        .refresh-btn:hover { background: #5a3a28; }
+        .table-wrap { max-height: 500px; overflow-y: auto; border: 1px solid #3a2218; border-radius: 12px; }
+        .pending-section { margin-top: 24px; }
+        .pending-section h2 { color: #ffc84d; font-size: 16px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div id="login" class="login-form">
+        <h1>🔒 Admin Login</h1>
+        <input type="password" id="admin-password" placeholder="Enter admin secret...">
+        <button onclick="doLogin()">Login</button>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <h1>🎰 Crypto Slots - Admin Dashboard</h1>
+        <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+
+        <div class="stats-grid" id="stats-grid"></div>
+
+        <h2 style="color:#ffc84d; font-size:16px; margin-bottom:12px;">Pending Payouts</h2>
+        <div class="table-wrap" id="pending-wrap" style="margin-bottom:24px;"></div>
+
+        <h2 style="color:#ffc84d; font-size:16px; margin-bottom:12px;">All Spins</h2>
+        <div class="table-wrap" id="spins-wrap"></div>
+    </div>
+
+    <script>
+        let ADMIN_SECRET = '';
+
+        function doLogin() {
+            ADMIN_SECRET = document.getElementById('admin-password').value;
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            loadData();
+        }
+
+        async function api(path) {
+            const res = await fetch(path, { headers: { 'x-admin-secret': ADMIN_SECRET } });
+            return res.json();
+        }
+
+        async function loadData() {
+            const stats = await api('/api/admin/stats');
+            const spinsData = await api('/api/admin/spins?limit=100');
+
+            document.getElementById('stats-grid').innerHTML = `
+                <div class="stat-card"><div class="label">Total Spins</div><div class="value">${stats.totalSpins}</div></div>
+                <div class="stat-card"><div class="label">Win Rate</div><div class="value">${stats.winRate}%</div></div>
+                <div class="stat-card"><div class="label">Unique Players</div><div class="value">${stats.uniquePlayers}</div></div>
+                <div class="stat-card"><div class="label">Total Bets</div><div class="value">${parseFloat(stats.totalBets).toFixed(2)} MATIC</div></div>
+                <div class="stat-card"><div class="label">Total Payouts</div><div class="value green">${parseFloat(stats.totalPayouts).toFixed(2)} MATIC</div></div>
+                <div class="stat-card"><div class="label">House Profit</div><div class="value ${stats.houseProfit >= 0 ? 'green' : 'red'}">${parseFloat(stats.houseProfit).toFixed(2)} MATIC</div></div>
+            `;
+
+            if (stats.pendingPayouts.length > 0) {
+                document.getElementById('pending-wrap').innerHTML = renderTable(stats.pendingPayouts, true);
+            } else {
+                document.getElementById('pending-wrap').innerHTML = '<p style="color:#8b7060; padding:12px;">No pending payouts</p>';
+            }
+
+            document.getElementById('spins-wrap').innerHTML = renderTable(spinsData.spins, false);
+        }
+
+        function renderTable(spins, showPay) {
+            if (!spins.length) return '<p style="color:#8b7060; padding:12px;">No spins yet</p>';
+            return `<table>
+                <tr>
+                    <th>Date</th><th>Wallet</th><th>Bet</th><th>Lines</th><th>Total</th>
+                    <th>Win</th><th>Profit</th><th>Status</th>${showPay ? '<th>Action</th>' : ''}
+                </tr>
+                ${spins.map(s => `<tr>
+                    <td>${new Date(s.createdAt).toLocaleString()}</td>
+                    <td>${s.walletAddress.slice(0,8)}...</td>
+                    <td>${s.betAmount}</td>
+                    <td>${s.activeLines}</td>
+                    <td>${s.totalBet}</td>
+                    <td>${s.isWin ? `<span class="badge badge-win">${s.totalWin} MATIC</span>` : `<span class="badge badge-loss">0</span>`}</td>
+                    <td style="color:${s.profit >= 0 ? '#5ecf6b' : '#ff5a6b'}">${s.profit > 0 ? '+' : ''}${parseFloat(s.profit).toFixed(2)}</td>
+                    <td><span class="badge badge-${s.status}">${s.status}</span></td>
+                    ${showPay ? `<td><button class="pay-btn" onclick="markPaid('${s._id}')">Mark Paid</button></td>` : ''}
+                </tr>`).join('')}
+            </table>`;
+        }
+
+        async function markPaid(id) {
+            await fetch(`/api/admin/spin/${id}/pay`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'x-admin-secret': ADMIN_SECRET },
+                body: JSON.stringify({ status: 'paid' })
+            });
+            loadData();
+        }
+    </script>
+</body>
+</html>

@@ -1,5 +1,7 @@
 import { SlotMachineRNG } from "./dist/rng.js";
 
+window.BACKEND_URL = window.location.origin;
+
 let currentSpinResult = null;
 
 const REEL_COLUMNS = 3;
@@ -629,9 +631,6 @@ function startSpin() {
         return;
     }
 
-    currentSpinResult = slotEngine.generateSpin();
-    console.log("Spin result:", currentSpinResult.grid);
-
     isSpinning = true;
     lastWin = 0;
     paylineGraphic.visible = false;
@@ -640,6 +639,31 @@ function startSpin() {
     setStatus(machineMessages.spin);
     pulseCabinet();
     playSpinSound();
+
+    const backendUrl = window.BACKEND_URL || '';
+
+    fetch(`${backendUrl}/api/spin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            walletAddress: window.WalletManager.address,
+            betAmount: currentBet,
+            activeLines: activeLineCount,
+            clientSeed: window.WalletManager.address,
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) throw new Error(data.error || 'Spin failed');
+        currentSpinResult = { grid: data.result.grid.map(col => col.map(id => symbolById[id] || symbolById['orange'])) };
+        currentSpinResult._serverData = data.result;
+        console.log("Server spin result:", data.result);
+    })
+    .catch(err => {
+        console.error("Backend spin failed, using local RNG:", err);
+        currentSpinResult = slotEngine.generateSpin();
+    })
+    .finally(() => {
 
 reels.forEach((reel, column) => {
     const blur = reel.filters[0];
@@ -675,6 +699,8 @@ reels.forEach((reel, column) => {
         }
     });
 });
+
+    }); // end finally
 }
 
 function replaceSymbol(sprite, colIndex, rowIndex) {
