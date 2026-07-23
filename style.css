@@ -1,0 +1,444 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Orbitron:wght@500;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-dark: #0a0608;
+    --bg-panel: #120a0e;
+    --bg-card: #1a0c10;
+    --border-gold: #ffc84d;
+    --border-dim: #3a2218;
+    --text-gold: #ffe08a;
+    --text-cream: #ffe4b8;
+    --text-muted: #8b7060;
+    --accent-red: #ff5a6b;
+    --accent-green: #5ecf6b;
+    --btn-bg: #2a181c;
+    --btn-hover: #3a2028;
+    --spin-gradient-1: #ff8c42;
+    --spin-gradient-2: #ff5a6b;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    background: var(--bg-dark);
+    color: var(--text-cream);
+    font-family: 'Cinzel', serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    background: radial-gradient(ellipse at center top, #1a0c10 0%, #0a0608 60%);
+}
+
+.machine-shell {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.machine-main {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+/* Side Panels */
+.side-panel {
+    width: 240px;
+    min-width: 200px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-dim);
+    border-radius: 16px;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.panel-heading {
+    margin-bottom: 16px;
+}
+
+.panel-chip {
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--border-gold);
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 20px;
+    padding: 4px 12px;
+    margin-bottom: 8px;
+}
+
+.panel-heading h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-gold);
+}
+
+.paytable-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-dim);
+}
+
+.paytable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.paytable-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.paytable-item:hover {
+    border-color: var(--border-dim);
+}
+
+.paytable-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.paytable-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-cream);
+}
+
+.paytable-values {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Feature Panel */
+.feature-card {
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.feature-card:hover {
+    border-color: var(--border-dim);
+}
+
+.feature-card h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-gold);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+
+.feature-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Reel Stage */
+.reel-stage-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.machine-hud {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.machine-hud-title {
+    display: flex;
+    justify-content: center;
+}
+
+.hud-logo-img {
+    height: 50px;
+    width: auto;
+    filter: drop-shadow(0 0 10px rgba(255, 200, 77, 0.3));
+}
+
+.machine-stats {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.stat-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-dim);
+    border-radius: 12px;
+    padding: 10px 18px;
+    text-align: center;
+    min-width: 90px;
+}
+
+.stat-label {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-gold);
+}
+
+/* Game Wrapper */
+.game-wrapper {
+    position: relative;
+    background: var(--bg-card);
+    border: 3px solid var(--border-dim);
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 900 / 640;
+    width: 100%;
+}
+
+.game-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/* Status Overlay */
+.machine-status-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: linear-gradient(to top, rgba(10, 6, 8, 0.95), transparent);
+    padding: 30px 16px 12px;
+    text-align: center;
+}
+
+.status-ribbon {
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--border-gold);
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-bottom: 6px;
+}
+
+.status-display {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Control Deck */
+.control-deck {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.control-btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-cream);
+    background: var(--btn-bg);
+    border: 2px solid var(--border-dim);
+    border-radius: 12px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.control-btn:hover:not(:disabled) {
+    background: var(--btn-hover);
+    border-color: var(--border-gold);
+    color: var(--text-gold);
+}
+
+.control-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.spin-btn {
+    position: relative;
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--spin-gradient-1), var(--spin-gradient-2));
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(255, 90, 107, 0.3), inset 0 -2px 6px rgba(0,0,0,0.3);
+}
+
+.spin-btn:hover:not(:disabled) {
+    transform: scale(1.08);
+    box-shadow: 0 6px 30px rgba(255, 90, 107, 0.5), inset 0 -2px 6px rgba(0,0,0,0.3);
+}
+
+.spin-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.spin-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.spin-btn-label {
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.spin-btn-sub {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+/* Mobile Info Panels */
+.mobile-info-panels {
+    display: none;
+}
+
+.mobile-panel {
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .machine-main {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .side-panel {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .paytable-panel {
+        display: none;
+    }
+
+    .feature-panel {
+        display: none;
+    }
+
+    .mobile-info-panels {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .mobile-panel {
+        display: block;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .machine-stats {
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        min-width: 70px;
+        padding: 8px 12px;
+    }
+
+    .stat-value {
+        font-size: 14px;
+    }
+
+    .control-deck {
+        flex-wrap: wrap;
+    }
+
+    .spin-btn {
+        width: 80px;
+        height: 80px;
+    }
+
+    .spin-btn-label {
+        font-size: 15px;
+    }
+}
