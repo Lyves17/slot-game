@@ -103,15 +103,17 @@ const paylines = [
     { id: 5, rows: [2, 1, 0], color: 0xd4a84b, name: "Up Diagonal" }
 ];
 
-const betOptions = [5, 10, 20, 50, 100];
+const betOptions = [0.001, 0.005, 0.01, 0.05, 0.1];
 const machineMessages = {
-    idle: "Select your lines and spin for a payout.",
+    idle: "Connect your wallet to start playing.",
+    connected: "Select your lines and spin for a payout.",
     spin: "Reels are spinning. Classic line wins pay left to right.",
-    broke: "Not enough balance for that total bet. Lower your lines or coin size.",
+    broke: "Not enough MATIC balance. Lower your lines or coin size.",
     jackpot: "Jackpot line. Three BAR wilds lit up the machine.",
     big: "Big win. Multiple hits landed on the same spin.",
     small: "Win registered. Press spin to chase a bigger combo.",
-    lose: "No payout this spin. The next one could still stack multiple wins."
+    lose: "No payout this spin. The next one could still stack multiple wins.",
+    noWallet: "Connect your wallet to play."
 };
 
 const app = new PIXI.Application({
@@ -168,9 +170,9 @@ const reels = [];
 const bubbles = [];
 const lineBadges = [];
 let activeLineCount = 3;
-let betIndex = 1;
+let betIndex = 2;
 let currentBet = betOptions[betIndex];
-let balance = 1000;
+let balance = 0;
 let lastWin = 0;
 let isSpinning = false;
 let soundEnabled = true;
@@ -180,6 +182,122 @@ let symbolTextures = {};
 drawMachineChrome();
 updateDashboard();
 setStatus(machineMessages.idle);
+
+const connectBtn = document.getElementById("connect-wallet");
+const disconnectBtn = document.getElementById("disconnect-wallet");
+const walletStatus = document.getElementById("wallet-status");
+const walletInfo = document.getElementById("wallet-info");
+const walletAddressEl = document.getElementById("wallet-address");
+const depositModal = document.getElementById("deposit-modal");
+const closeDepositBtn = document.getElementById("close-deposit");
+const depositBtn = document.getElementById("deposit-btn");
+const withdrawBtn = document.getElementById("withdraw-btn");
+const depositStatus = document.getElementById("deposit-status");
+const withdrawStatus = document.getElementById("withdraw-status");
+
+window.onWalletUpdate = async function () {
+    if (window.WalletManager.isWalletConnected()) {
+        walletStatus.classList.add("hidden");
+        walletInfo.classList.remove("hidden");
+        walletAddressEl.textContent = window.WalletManager.getShortAddress(window.WalletManager.address);
+        const bal = await window.WalletManager.getBalance();
+        balance = parseFloat(bal);
+        spinButton.disabled = false;
+        updateDashboard();
+        setStatus(machineMessages.connected);
+    } else {
+        walletStatus.classList.remove("hidden");
+        walletInfo.classList.add("hidden");
+        balance = 0;
+        spinButton.disabled = true;
+        updateDashboard();
+        setStatus(machineMessages.idle);
+    }
+};
+
+connectBtn.addEventListener("click", async () => {
+    try {
+        connectBtn.textContent = "Connecting...";
+        connectBtn.disabled = true;
+        await window.WalletManager.connectWallet();
+    } catch (e) {
+        alert(e.message || "Failed to connect wallet");
+    } finally {
+        connectBtn.textContent = "Connect Wallet";
+        connectBtn.disabled = false;
+    }
+});
+
+disconnectBtn.addEventListener("click", () => {
+    window.WalletManager.disconnectWallet();
+});
+
+closeDepositBtn.addEventListener("click", () => {
+    depositModal.classList.add("hidden");
+});
+
+depositModal.addEventListener("click", (e) => {
+    if (e.target === depositModal) {
+        depositModal.classList.add("hidden");
+    }
+});
+
+depositBtn.addEventListener("click", async () => {
+    const amount = parseFloat(document.getElementById("deposit-amount").value);
+    if (!amount || amount <= 0) {
+        depositStatus.textContent = "Enter a valid amount";
+        depositStatus.className = "modal-status error";
+        return;
+    }
+
+    try {
+        depositBtn.disabled = true;
+        depositStatus.textContent = "Sending transaction...";
+        depositStatus.className = "modal-status pending";
+        const txHash = await window.WalletManager.sendBet(amount);
+        depositStatus.textContent = "Deposit confirmed! TX: " + txHash.slice(0, 10) + "...";
+        depositStatus.className = "modal-status success";
+        balance += amount;
+        updateDashboard(true);
+    } catch (e) {
+        depositStatus.textContent = e.message || "Deposit failed";
+        depositStatus.className = "modal-status error";
+    } finally {
+        depositBtn.disabled = false;
+    }
+});
+
+withdrawBtn.addEventListener("click", async () => {
+    const amount = parseFloat(document.getElementById("withdraw-amount").value);
+    if (!amount || amount <= 0) {
+        withdrawStatus.textContent = "Enter a valid amount";
+        withdrawStatus.className = "modal-status error";
+        return;
+    }
+
+    if (amount > balance) {
+        withdrawStatus.textContent = "Insufficient casino balance";
+        withdrawStatus.className = "modal-status error";
+        return;
+    }
+
+    try {
+        withdrawBtn.disabled = true;
+        withdrawStatus.textContent = "Processing withdrawal...";
+        withdrawStatus.className = "modal-status pending";
+        balance -= amount;
+        updateDashboard(true);
+        withdrawStatus.textContent = "Withdrawal processed!";
+        withdrawStatus.className = "modal-status success";
+    } catch (e) {
+        withdrawStatus.textContent = e.message || "Withdrawal failed";
+        withdrawStatus.className = "modal-status error";
+    } finally {
+        withdrawBtn.disabled = false;
+    }
+});
+
+window.WalletManager.setupWalletListeners();
 
 spinButton.addEventListener("click", startSpin);
 betButton.addEventListener("click", () => {
@@ -202,6 +320,21 @@ decreaseLinesButton.addEventListener("click", () => {
     adjustLines(-1);
 });
 soundButton.addEventListener("click", toggleSound);
+
+const openDepositBtn = document.getElementById("open-deposit");
+openDepositBtn.addEventListener("click", () => {
+    if (!window.WalletManager.isWalletConnected()) {
+        alert("Connect your wallet first!");
+        return;
+    }
+    depositModal.classList.remove("hidden");
+    depositStatus.textContent = "";
+    depositStatus.className = "modal-status";
+    withdrawStatus.textContent = "";
+    withdrawStatus.className = "modal-status";
+    document.getElementById("deposit-amount").value = "";
+    document.getElementById("withdraw-amount").value = "";
+});
 
 const resizeObserver = new ResizeObserver(() => fitGameToContainer());
 resizeObserver.observe(gameContainerElement);
@@ -486,9 +619,13 @@ function startSpin() {
         return;
     }
 
+    if (!window.WalletManager.isWalletConnected()) {
+        setStatus(machineMessages.noWallet);
+        return;
+    }
+
     if (balance < totalBet) {
         setStatus(machineMessages.broke);
-        window.alert("Not enough balance for that total bet.");
         return;
     }
 
@@ -1050,7 +1187,7 @@ function createFallingLight(color, delay) {
 }
 
 function formatCurrency(value) {
-    return `$${Math.floor(value)}`;
+    return `${parseFloat(value).toFixed(4)} MATIC`;
 }
 
 function toggleSound() {

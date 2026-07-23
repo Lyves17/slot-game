@@ -40,6 +40,271 @@ body {
     background: radial-gradient(ellipse at center top, #1a0c10 0%, #0a0608 60%);
 }
 
+/* Wallet Bar */
+.wallet-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-dim);
+    border-radius: 16px;
+    padding: 10px 20px;
+}
+
+.wallet-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wallet-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-gold);
+    letter-spacing: 2px;
+}
+
+.wallet-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wallet-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wallet-network {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-green);
+    background: rgba(94, 207, 107, 0.1);
+    border: 1px solid rgba(94, 207, 107, 0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    letter-spacing: 1px;
+}
+
+.wallet-btn {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.connect-btn {
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    box-shadow: 0 2px 12px rgba(124, 58, 237, 0.3);
+}
+
+.connect-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5);
+}
+
+.disconnect-btn {
+    color: var(--text-muted);
+    background: var(--btn-bg);
+    border: 1px solid var(--border-dim);
+}
+
+.disconnect-btn:hover {
+    color: var(--accent-red);
+    border-color: var(--accent-red);
+}
+
+.wallet-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wallet-address-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-cream);
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 10px;
+    padding: 8px 14px;
+}
+
+.wallet-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 6px rgba(94, 207, 107, 0.5);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Deposit Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--bg-panel);
+    border: 2px solid var(--border-dim);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 420px;
+    width: 90%;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--accent-red);
+}
+
+.modal-content h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-gold);
+    margin-bottom: 8px;
+}
+
+.modal-content p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.modal-input-group {
+    margin-bottom: 16px;
+}
+
+.modal-input-group label {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.modal-input-group input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 2px solid var(--border-dim);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-gold);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.modal-input-group input:focus {
+    border-color: var(--border-gold);
+}
+
+.modal-action-btn {
+    width: 100%;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+}
+
+.modal-action-btn.withdraw {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.modal-action-btn.withdraw:hover {
+    box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4);
+}
+
+.modal-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid var(--border-dim);
+    margin: 24px 0;
+}
+
+.modal-status {
+    margin-top: 10px;
+    font-size: 12px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.modal-status.error {
+    color: var(--accent-red);
+}
+
+.modal-status.success {
+    color: var(--accent-green);
+}
+
+.modal-status.pending {
+    color: var(--text-gold);
+}
+
 .machine-shell {
     width: 100%;
     max-width: 1400px;
@@ -316,6 +581,18 @@ body {
 .control-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.deposit-btn {
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    border-color: #7c3aed;
+}
+
+.deposit-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #6d28d9, #2563eb);
+    border-color: #a78bfa;
+    color: #fff;
 }
 
 .spin-btn {

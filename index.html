@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruit Reels Slots</title>
+    <title>Fruit Reels Slots - Crypto Casino</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
@@ -11,6 +11,27 @@
 </head>
 <body>
     <main class="machine-shell">
+        <!-- WALLET BAR -->
+        <section class="wallet-bar">
+            <div class="wallet-bar-left">
+                <img src="./assets/logo.png" alt="Logo" class="hud-logo-img" style="height:36px">
+                <span class="wallet-title">CRYPTO SLOTS</span>
+            </div>
+            <div class="wallet-bar-right">
+                <div id="wallet-status" class="wallet-status">
+                    <span class="wallet-network">Polygon</span>
+                    <button id="connect-wallet" class="wallet-btn connect-btn">Connect Wallet</button>
+                </div>
+                <div id="wallet-info" class="wallet-info hidden">
+                    <div class="wallet-address-badge">
+                        <span class="wallet-dot"></span>
+                        <span id="wallet-address"></span>
+                    </div>
+                    <button id="disconnect-wallet" class="wallet-btn disconnect-btn">Disconnect</button>
+                </div>
+            </div>
+        </section>
+
         <section class="machine-main">
             <aside class="side-panel paytable-panel">
                 <div class="panel-heading">
@@ -18,26 +39,21 @@
                     <h2>Symbol Wins</h2>
                 </div>
                 <div class="paytable-note">
-                    Pays left to right on active lines. BAR is wild. Cherries pay for 1, 2, or 3 on a line.
+                    Pays left to right on active lines. BAR is wild. Cherries pay for 2 or 3 on a line.
                 </div>
                 <div id="paytable-list" class="paytable-list"></div>
             </aside>
 
             <section class="reel-stage-panel">
                 <div class="machine-hud">
-                    <div class="machine-hud-title">
-                        <a href="index.html">
-                        <img src="./assets/logo.png" alt="Logo" class="hud-logo-img">
-                        </a>
-                    </div>
                     <div class="machine-stats">
                         <div class="stat-card">
                             <span class="stat-label">Balance</span>
-                            <strong class="stat-value" id="balance-display">$1000</strong>
+                            <strong class="stat-value" id="balance-display">0 MATIC</strong>
                         </div>
                         <div class="stat-card">
                             <span class="stat-label">Coin Bet</span>
-                            <strong class="stat-value" id="bet-display">$10</strong>
+                            <strong class="stat-value" id="bet-display">0.01 MATIC</strong>
                         </div>
                         <div class="stat-card">
                             <span class="stat-label">Lines</span>
@@ -45,7 +61,7 @@
                         </div>
                         <div class="stat-card">
                             <span class="stat-label">Total Bet</span>
-                            <strong class="stat-value" id="total-bet-display">$30</strong>
+                            <strong class="stat-value" id="total-bet-display">0.03 MATIC</strong>
                         </div>
                     </div>
                 </div>
@@ -53,7 +69,7 @@
                 <div id="game-wrapper" class="game-wrapper">
                     <div class="machine-status-overlay">
                         <span class="status-ribbon">Machine Status</span>
-                        <div id="status-display" class="status-display">Select your lines and spin for a payout.</div>
+                        <div id="status-display" class="status-display">Connect your wallet to start playing.</div>
                     </div>
                     <div id="game-container"></div>
                 </div>
@@ -74,7 +90,7 @@
                 </div>
                 <div class="feature-card">
                     <h3>Classic Cherry Rule</h3>
-                    <p>Cherries pay from the left reel with 1, 2, or 3 in a row, while other symbols pay on 3 of a kind.</p>
+                    <p>Cherries pay from the left reel with 2 or 3 in a row, while other symbols pay on 3 of a kind.</p>
                 </div>
             </aside>
         </section>
@@ -84,11 +100,38 @@
             <button class="control-btn" id="increase-lines">+ Lines</button>
             <button class="control-btn" id="change-bet">Change Bet</button>
             <button class="control-btn" id="toggle-sound">Sound On</button>
-            <button id="spin" class="spin-btn">
+            <button class="control-btn deposit-btn" id="open-deposit">Deposit / Withdraw</button>
+            <button id="spin" class="spin-btn" disabled>
                 <span class="spin-btn-label">Spin</span>
                 <span class="spin-btn-sub">Play</span>
             </button>
         </section>
+
+        <!-- DEPOSIT / WITHDRAW MODAL -->
+        <div id="deposit-modal" class="modal hidden">
+            <div class="modal-content">
+                <button class="modal-close" id="close-deposit">&times;</button>
+                <h2>Deposit MATIC</h2>
+                <p>Send MATIC to your casino balance from your wallet.</p>
+                <div class="modal-input-group">
+                    <label>Amount (MATIC)</label>
+                    <input type="number" id="deposit-amount" min="0.001" step="0.001" placeholder="0.1">
+                </div>
+                <button id="deposit-btn" class="modal-action-btn">Deposit</button>
+                <div id="deposit-status" class="modal-status"></div>
+
+                <hr class="modal-divider">
+
+                <h2>Withdraw MATIC</h2>
+                <p>Send your winnings back to your wallet.</p>
+                <div class="modal-input-group">
+                    <label>Amount (MATIC)</label>
+                    <input type="number" id="withdraw-amount" min="0.001" step="0.001" placeholder="0.1">
+                </div>
+                <button id="withdraw-btn" class="modal-action-btn withdraw">Withdraw</button>
+                <div id="withdraw-status" class="modal-status"></div>
+            </div>
+        </div>
 
         <section class="mobile-info-panels">
             <aside class="side-panel paytable-panel mobile-panel">
@@ -97,7 +140,7 @@
                     <h2>Symbol Wins</h2>
                 </div>
                 <div class="paytable-note">
-                    Pays left to right on active lines. BAR is wild. Cherries pay for 1, 2, or 3 on a line.
+                    Pays left to right on active lines. BAR is wild. Cherries pay for 2 or 3 on a line.
                 </div>
                 <div id="paytable-list-mobile" class="paytable-list"></div>
             </aside>
@@ -117,7 +160,7 @@
                 </div>
                 <div class="feature-card">
                     <h3>Classic Cherry Rule</h3>
-                    <p>Cherries pay from the left reel with 1, 2, or 3 in a row, while other symbols pay on 3 of a kind.</p>
+                    <p>Cherries pay from the left reel with 2 or 3 in a row, while other symbols pay on 3 of a kind.</p>
                 </div>
             </aside>
         </section>
@@ -125,6 +168,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script src="wallet.js"></script>
     <script type="module" src="main.js"></script>
 </body>
 </html>
