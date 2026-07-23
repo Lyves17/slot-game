@@ -103,7 +103,7 @@ const paylines = [
     { id: 5, rows: [2, 1, 0], color: 0xd4a84b, name: "Up Diagonal" }
 ];
 
-const betOptions = [1, 2, 5, 10, 25];
+const betOptions = [2, 5, 10, 25, 50];
 const machineMessages = {
     idle: "Connect your wallet to start playing.",
     connected: "Select your lines and spin for a payout.",
