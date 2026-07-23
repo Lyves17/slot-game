@@ -1,5 +1,3 @@
-import { ethers } from "https://cdn.ethers.io/lib/ethers-5.7.2.esm.min.js";
-
 const CASINO_WALLET = "0x5B5B6264EF02E701D04c32768c2216080889A2c0";
 const POLYGON_CHAIN_ID = 137;
 const POLYGON_RPC = "https://polygon-rpc.com";
