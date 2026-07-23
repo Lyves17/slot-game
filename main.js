@@ -103,7 +103,7 @@ const paylines = [
     { id: 5, rows: [2, 1, 0], color: 0xd4a84b, name: "Up Diagonal" }
 ];
 
-const betOptions = [0.001, 0.005, 0.01, 0.05, 0.1];
+const betOptions = [1, 2, 5, 10, 25];
 const machineMessages = {
     idle: "Connect your wallet to start playing.",
     connected: "Select your lines and spin for a payout.",
@@ -170,7 +170,7 @@ const reels = [];
 const bubbles = [];
 const lineBadges = [];
 let activeLineCount = 3;
-let betIndex = 2;
+let betIndex = 0;
 let currentBet = betOptions[betIndex];
 let balance = 0;
 let lastWin = 0;
